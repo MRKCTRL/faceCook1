@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>Public Diary Entries</h1>
+    {% for entry in entries %}
+        <div class="entry">
+            <h2>{{ entry.title }}</h2>
+            <p>{{ entry.content }}</p>
+            <small>Posted on {{ entry.created_at }}</small>
+        </div>
+    {% endfor %}
+{% endblock %}
