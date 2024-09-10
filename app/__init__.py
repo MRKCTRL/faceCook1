@@ -3,12 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import Config
 
+import os
+from dotenv import load_dotenv
+from flask import Flask 
 
 import logging
 from flask_talisman import Talisman
 from prometheus_client import Counter, Histogram, generate_latest
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+
+load_dotenv()
 
 
 REQUEST_COUNT=Counter('request_count', 'Total number of HHTTP requests', ['method', 'endpoint'])
@@ -19,6 +24,9 @@ REQUEST_LATENCY=Histogram('request_latency_seconds', 'Request latency', ['endpoi
 def create_app():
     app=Flask(__name__)
     
+    
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URL')
     
     Talisman(app, content_content_policy=None)
     
