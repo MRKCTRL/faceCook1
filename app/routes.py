@@ -3,6 +3,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 from .models import User, DiaryEntry 
 from . import db 
 from werkzeug.security import generate_password_hash, check_password_hash
+from .forms import RegistrationForm
+
 
 main=Blueprint('main', __name__)
 
@@ -35,6 +37,10 @@ def add_entry():
 
 @main.route('/register', methods=['POST', 'POST'])
 def register():
+    form=RegistrationForm()
+    if form.validate_on_submit():
+        return "registeration successful"
+    return render_template('register,html', form=form )
     if request.method=='POST':
         username=request.form.get('username')
         password=request.form.get('password')
