@@ -12,6 +12,10 @@ from flask_talisman import Talisman
 from prometheus_client import Counter, Histogram, generate_latest
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from flask_wtf.csrf import CSRFProtect
+
+
+csrf=CSRFProtect()
 
 load_dotenv()
 
@@ -27,6 +31,23 @@ def create_app():
     
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URL')
+    
+    
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY']=True
+    app.config['SESSION_COOKIE_SAMESITE']=True 
+    
+    
+    csrf.init_app(app)
+    
+    
+    csp={
+        'default-src':'\'self\'',
+        'img-src': '*',
+        'script-src': ['\'self\'', 'https://apis.google.com'],
+        'style-src':['\'self\'', 'https://fonts.googleapis.com']   
+    }
+    Talisman(app, content_security_policy=csp)
     
     Talisman(app, content_content_policy=None)
     
